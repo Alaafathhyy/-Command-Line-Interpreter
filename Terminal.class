@@ -1,0 +1,203 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.company;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.StandardCopyOption;
+
+public class Terminal {
+    String curpath = System.getProperty("user.dir");
+
+    Terminal() {
+    }
+
+    public void cd(String s) throws IOException {
+        File file;
+        if (s.charAt(0) == 'C') {
+            file = new File(s);
+        } else {
+            file = new File(this.curpath + "/" + s);
+        }
+
+        if (file.exists()) {
+            this.curpath = file.getCanonicalPath();
+        } else {
+            throw new NoSuchFileException(file.getCanonicalPath(), (String)null, "does not exist.");
+        }
+    }
+
+    public void mv(String source, String destination) throws IOException, NoSuchFileException {
+        if (source.charAt(0) != 'C') {
+            source = this.curpath + "\\" + source;
+        }
+
+        if (destination.charAt(0) != 'C') {
+            destination = this.curpath + "\\" + destination;
+        }
+
+        File src = new File(source);
+        File dst = new File(destination);
+        if (!src.exists()) {
+            throw new NoSuchFileException(src.getAbsolutePath(), (String)null, "does not exist.");
+        } else if (dst.isFile()) {
+            throw new IOException("Can't move into file.");
+        } else {
+            if (!dst.exists()) {
+                Files.move(src.toPath(), src.toPath().resolveSibling(dst.getName()));
+            } else {
+                Files.move(src.toPath(), dst.toPath().resolve(src.toPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+        }
+    }
+
+    public void mkdir(String filename) throws IOException {
+        if (filename.charAt(0) != 'C') {
+            filename = this.curpath + "\\" + filename;
+        }
+
+        File f1 = new File(filename);
+        boolean state = f1.mkdir();
+        if (f1.exists()) {
+            if (state) {
+                System.out.print("Directory is Created in " + f1.getAbsolutePath());
+            } else {
+                throw new IOException("Couldn't create Directory");
+            }
+        } else {
+            throw new IOException("Directory" + f1.getAbsolutePath() + "doesn't exist");
+        }
+    }
+
+    public void rmdir(String filename) throws NoSuchFileException {
+        if (filename.charAt(0) != 'C') {
+            filename = this.curpath + "\\" + filename;
+        }
+
+        File f1 = new File(filename);
+        if (!f1.exists()) {
+            throw new NoSuchFileException(f1.getAbsolutePath(), (String)null, "doesn't exist");
+        } else {
+            if (f1.isDirectory()) {
+                if (f1.list().length == 0) {
+                    f1.delete();
+                    System.out.println("Directory is deleted Successfully");
+                } else {
+                    System.out.println("Couldn't delete the directory because it's not empty");
+                }
+            } else {
+                System.out.println("couldn't delete it because This is a file not a directory");
+            }
+
+        }
+    }
+
+    public void clear() {
+        for(int i = 0; i < 1000; ++i) {
+            System.out.println("\n");
+        }
+
+    }
+
+    public void pwd() {
+        System.out.println(this.curpath);
+    }
+
+    public String echo(String s) {
+        return s;
+    }
+
+    public void ls() {
+        File f1 = new File(this.curpath);
+        String[] show = f1.list();
+        if (show != null) {
+            String[] var3 = show;
+            int var4 = show.length;
+
+            for(int var5 = 0; var5 < var4; ++var5) {
+                String x = var3[var5];
+                System.out.println(x);
+            }
+        }
+
+    }
+
+    public void cat(String file) {
+        if (file.charAt(0) != 'C') {
+            file = this.curpath + "\\" + file;
+        }
+
+        File f1 = new File(file);
+        String line = "";
+        String S = "";
+        if (f1.exists()) {
+            try {
+                FileReader filereader = new FileReader(file);
+
+                BufferedReader bufferReader;
+                for(bufferReader = new BufferedReader(filereader); (line = bufferReader.readLine()) != null; S = S + line) {
+                }
+
+                bufferReader.close();
+                System.out.println(S);
+            } catch (IOException var7) {
+                System.out.println("An Error has occurred ");
+            }
+        } else {
+            System.out.println("Couldn't find file");
+        }
+
+    }
+
+    public void rm(String s) {
+        if (s.charAt(0) != 'C') {
+            s = this.curpath + "\\" + s;
+        }
+
+        File f1 = new File(s);
+        if (!f1.exists()) {
+            System.out.println("Couldn't find file");
+        } else if (f1.isDirectory()) {
+            System.out.println("Couldn't delete it");
+        } else if (!f1.delete()) {
+            System.out.println("An error has occurred");
+        } else {
+            f1.delete();
+            System.out.println("couldn't delete it because This is a file not a directory");
+        }
+
+    }
+
+    public void cp(String source, String dest) throws IOException {
+        if (source.charAt(0) != 'C') {
+            source = this.curpath + "\\" + source;
+        }
+
+        if (dest.charAt(0) != 'C') {
+            dest = this.curpath + "\\" + dest;
+        }
+
+        File f1 = new File(source);
+        File f2 = new File(dest);
+        if (!f1.exists()) {
+            System.out.println("DOESN'T EXIST");
+        }
+
+        if (!f2.exists()) {
+            if (f2.isDirectory()) {
+                System.out.println("DOESN'T EXIST");
+            }
+        } else {
+            Files.copy(f1.toPath(), f2.toPath().resolve(f1.toPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+    }
+}
