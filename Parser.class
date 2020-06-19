@@ -1,0 +1,110 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.company;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class Parser {
+    String arg1 = "";
+    String arg2 = "";
+    String[] a = new String[]{"cd", "mv", "cat", "mkdir", "rm", "rmdir", "ls", "cp", "clear", "pwd", "echo"};
+    List<String> list;
+    String command;
+    String path;
+    String s;
+
+    public Parser() {
+        this.list = Arrays.asList(this.a);
+        this.command = "";
+        this.path = "";
+        this.s = "";
+    }
+
+    public void append(String path) {
+        this.arg1 = "";
+        this.arg2 = "";
+        boolean flag = false;
+        if (this.command.compareTo("mkdir") != 0 && this.command.compareTo("rm") != 0 && this.command.compareTo("rmdir") != 0 && this.command.compareTo("cat") != 0 && this.command.compareTo("echo") != 0 && this.command.compareTo("cd") != 0) {
+            if (this.command.compareTo("mv") == 0 || this.command.compareTo("cp") == 0) {
+                for(int i = 0; i < path.length(); ++i) {
+                    String var10001;
+                    if (path.charAt(i) != ' ' && !flag) {
+                        var10001 = this.arg1;
+                        this.arg1 = var10001 + path.charAt(i);
+                    } else {
+                        flag = true;
+                        var10001 = this.arg2;
+                        this.arg2 = var10001 + path.charAt(i);
+                    }
+                }
+            }
+        } else {
+            this.arg1 = path;
+        }
+
+    }
+
+    public boolean parse(String cmd) {
+        this.arg1 = "";
+        this.arg2 = "";
+        boolean flag = false;
+        this.command = "";
+        this.path = "";
+        int j = 0;
+
+        int cnt;
+        for(cnt = 0; cnt < cmd.length(); ++cnt) {
+            if (cmd.charAt(cnt) == ' ') {
+                flag = true;
+                break;
+            }
+
+            String var10001 = this.command;
+            this.command = var10001 + cmd.charAt(cnt);
+            j = cnt + 1;
+        }
+
+        if (!this.list.contains(this.command)) {
+            System.out.println("this is an invalid command");
+            return false;
+        } else {
+            if (flag) {
+                this.path = cmd.substring(j + 1);
+            }
+
+            cnt = 0;
+
+            for(int i = 0; i < this.path.length(); ++i) {
+                if (this.path.charAt(i) == ' ') {
+                    ++cnt;
+                }
+            }
+
+            if (this.command.compareTo("mv") != 0 && this.command.compareTo("cp") != 0) {
+                if (this.command.compareTo("mkdir") != 0 && this.command.compareTo("rm") != 0 && this.command.compareTo("rmdir") != 0 && this.command.compareTo("cat") != 0 && this.command.compareTo("echo") != 0 && this.command.compareTo("cd") != 0) {
+                    if (!this.path.isEmpty()) {
+                        System.out.println("this command doesn't take any arg");
+                        return false;
+                    }
+                } else if (this.path.isEmpty() || cnt > 0) {
+                    System.out.println("invalid arg , it takes one paramters ");
+                    return false;
+                }
+            } else if (cnt != 1) {
+                System.out.println("invalid arg , it takes two paramters ");
+                return false;
+            }
+
+            this.append(this.path);
+            return true;
+        }
+    }
+
+    public String getCmd() {
+        return this.command;
+    }
+}
