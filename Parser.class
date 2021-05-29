@@ -2,7 +2,7 @@
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
-
+//
 package com.company;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class Parser {
     String arg1 = "";
     String arg2 = "";
     String[] a = new String[]{"cd", "mv", "cat", "mkdir", "rm", "rmdir", "ls", "cp", "clear", "pwd", "echo"};
-    List<String> list;
+    List<String> list;//list of commands
     String command;
     String path;
     String s;
